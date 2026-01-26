@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>nanzihan2020 男子漢漬料本舖</title>
+    <style>
+        :root {
+            --bg-color: #051221;
+            --card-bg: #102a43;
+            --item-bg: #1a365d;
+            --gold: #d4af37;
+            --sage: #9caf88;
+            --text-main: #f0f4f8;
+            --text-sub: #8492a6;
+            --white: #ffffff;
+            --alert-red: #8b0000;
+            --font-en: "Constantia", serif;
+        }
+
+        body {
+            font-family: var(--font-en), "PingFang TC", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { width: 100%; max-width: 500px; }
+        h1 { text-align: center; font-size: 1.6rem; color: var(--white); margin-bottom: 5px; letter-spacing: 2px; }
+        .brand-sub { text-align: center; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 30px; letter-spacing: 4px; }
+
+        .category-title {
+            font-size: 1rem; border-left: 3px solid var(--gold);
+            padding-left: 12px; margin: 35px 0 15px 0;
+            color: var(--gold); font-weight: bold;
+        }
+
+        /* 商品按鈕 */
+        .product-row {
+            display: flex; align-items: center; background: var(--item-bg);
+            border: 1px solid #2d4a6d; border-radius: 10px; padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .product-info { flex: 1; cursor: pointer; }
+        .slogan { font-size: 0.75rem; color: var(--sage); margin-bottom: 4px; display: block; font-style: italic; }
+        .item-name { font-size: 1.05rem; font-weight: 500; color: var(--text-main); display: block; }
+        .item-en { font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px; }
+        .price { font-size: 1.1rem; font-weight: bold; color: var(--gold); display: block; }
+
+        /* 限定狀態 */
+        .status-gray { filter: grayscale(1); opacity: 0.5; pointer-events: none; }
+        .status-newyear { background: var(--alert-red) !important; border-color: #ff4d4d; pointer-events: none; }
+        .limit-tag { color: #ffcccc; font-size: 0.8rem; font-weight: bold; margin-top: 5px; display: block; }
+
+        /* 數量控制 */
+        .qty-ctrl {
+            display: flex; align-items: center; background: rgba(0,0,0,0.4);
+            border-radius: 8px; border: 1px solid #2d4a6d; margin-left: 10px;
+        }
+        .qty-btn { width: 40px; height: 40px; border: none; background: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+        .qty-num { width: 30px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--gold); }
+
+        /* 表單區域 */
+        .form-section { background: var(--card-bg); padding: 20px; border-radius: 12px; margin-top: 40px; border: 1px solid #2d4a6d; }
+        
+        .shipping-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .ship-opt {
+            padding: 12px; text-align: center; background: #0a192f; border: 1px solid #2d4a6d;
+            border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-sub);
+        }
+        .ship-opt.active { border-color: var(--gold); color: var(--gold); background: rgba(212, 175, 55, 0.1); }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-sub); font-weight: bold; }
+        
+        input, textarea, select { 
+            width: 100%; padding: 14px; background: #0a192f; border: 1px solid #2d4a6d; 
+            border-radius: 8px; color: var(--white); font-size: 1rem; box-sizing: border-box;
+            outline: none; -webkit-appearance: none; font-family: inherit;
+        }
+        
+        input[type="date"] {
+            min-height: 50px;
+            position: relative;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.5;
+        }
+
+        .notice-text { color: var(--white); font-size: 0.85rem; text-align: center; line-height: 1.6; margin: 25px 0; border: 1px dashed var(--sage); padding: 12px; border-radius: 8px; }
+
+        #cart-display { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #2d4a6d; }
+        .discount-info { color: var(--sage); font-size: 0.85rem; text-align: right; margin-bottom: 5px; font-style: italic; }
+        .total-box { font-size: 1.4rem; text-align: right; border-top: 1px solid #2d4a6d; padding-top: 15px; font-weight: bold; color: var(--gold); }
+
+        .btn-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 25px; }
+        .btn { padding: 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .btn-clear { background: #2d4a6d; color: var(--text-sub); }
+        .btn-copy { background: var(--gold); color: #051221; }
+        .footer-note { text-align: center; font-size: 0.75rem; color: #486581; margin: 40px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>IG: nanzihan2020</h1>
+    <div class="brand-sub">男子漢漬料本舖</div>
+
+    <div id="product-list">
+        <div class="category-title">【 HANDCRAFTED SAUCES | 漬料系列 】</div>
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('味噌辣醬', 180, 1)">
+                <span class="slogan">萬能熟食伴侶</span>
+                <span class="item-name">味噌辣醬 (Spicy Miso Sauce)</span>
+                <span class="price">$180</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('味噌辣醬', 180, -1)">−</button>
+                <div class="qty-num" id="qty-味噌辣醬">0</div>
+                <button class="qty-btn" onclick="changeQty('味噌辣醬', 180, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('干貝醬', 300, 1)">
+                <span class="slogan">絲絲極鮮 一匙升級</span>
+                <span class="item-name">干貝醬 (Dried Scallop Sauce)</span>
+                <span class="price">$300</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('干貝醬', 300, -1)">−</button>
+                <div class="qty-num" id="qty-干貝醬">0</div>
+                <button class="qty-btn" onclick="changeQty('干貝醬', 300, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('蔥油醬', 120, 1)">
+                <span class="slogan">復刻家味 拌麵神器</span>
+                <span class="item-name">蔥油醬 (Scallion Oil)</span>
+                <span class="price">$120</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('蔥油醬', 120, -1)">−</button>
+                <div class="qty-num" id="qty-蔥油醬">0</div>
+                <button class="qty-btn" onclick="changeQty('蔥油醬', 120, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="category-title">【 SIDE DISHES | 佐餐系列 】</div>
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('黃金泡菜', 200, 1)">
+                <span class="slogan">郁金熟成 佐餐神器</span>
+                <span class="item-name">黃金泡菜 (Golden Kimchi)</span>
+                <span class="price">$200</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('黃金泡菜', 200, -1)">−</button>
+                <div class="qty-num" id="qty-黃金泡菜">0</div>
+                <button class="qty-btn" onclick="changeQty('黃金泡菜', 200, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('花雕醉蝦', 380, 1)">
+                <span class="slogan">秘製微醺 星級冷盤</span>
+                <span class="item-name">花雕醉蝦 (Drunken Shrimp)</span>
+                <span class="price">$380</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('花雕醉蝦', 380, -1)">−</button>
+                <div class="qty-num" id="qty-花雕醉蝦">0</div>
+                <button class="qty-btn" onclick="changeQty('花雕醉蝦', 380, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="category-title">【 CRUNCHY SERIES | 酥脆系列 】</div>
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('糖霜腰果', 200, 1)">
+                <span class="slogan">雲朵微甜 輕盈午茶</span>
+                <span class="item-name">糖霜腰果 (Candied Cashews)</span>
+                <span class="price">$200</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('糖霜腰果', 200, -1)">−</button>
+                <div class="qty-num" id="qty-糖霜腰果">0</div>
+                <button class="qty-btn" onclick="changeQty('糖霜腰果', 200, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('椒鹽腰果', 200, 1)">
+                <span class="slogan">鹹香帶勁 微醺良伴</span>
+                <span class="item-name">椒鹽腰果 (Spiced Cashews)</span>
+                <span class="price">$200</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('椒鹽腰果', 200, -1)">−</button>
+                <div class="qty-num" id="qty-椒鹽腰果">0</div>
+                <button class="qty-btn" onclick="changeQty('椒鹽腰果', 200, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-row">
+            <div class="product-info" onclick="changeQty('蜜汁腰果', 200, 1)">
+                <span class="slogan">琥珀晶亮 蜜香酥脆</span>
+                <span class="item-name">蜜汁腰果 (Honey Roasted Cashews)</span>
+                <span class="price">$200</span>
+            </div>
+            <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('蜜汁腰果', 200, -1)">−</button>
+                <div class="qty-num" id="qty-蜜汁腰果">0</div>
+                <button class="qty-btn" onclick="changeQty('蜜汁腰果', 200, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="category-title">【 🔥🔥🔥 JUST NOW | 現在才有 🔥🔥🔥 】</div>
+        <div class="product-row status-newyear">
+            <div class="product-info">
+                <span class="slogan">Q彈鮮爽 實料滿袋</span>
+                <span class="item-name">重磅滷鮑魚 (Heavy-Pack Braised Abalone)</span>
+                <span class="price">$xxx</span>
+                <span class="limit-tag">新年限定 即將推出</span>
+            </div>
+        </div>
+        <div class="product-row status-newyear">
+            <div class="product-info">
+                <span class="slogan">骨酥肉嫩 化境之味</span>
+                <span class="item-name">琥珀酥骨秋刀魚 (Velvet Bone Sanma)</span>
+                <span class="price">$xxx</span>
+                <span class="limit-tag">新年限定 即將推出</span>
+            </div>
+        </div>
+        <div class="product-row status-gray">
+            <div class="product-info">
+                <span class="slogan">沁甜初戀 爽口清脆</span>
+                <span class="item-name">情人果 (Fruit of First Love)</span>
+                <span class="price">$180</span>
+                <span class="limit-tag">夏季限定 敬請期待</span>
+            </div>
+        </div>
+        <div class="product-row status-gray">
+            <div class="product-info">
+                <span class="slogan">盛夏脆響 解饞良伴</span>
+                <span class="item-name">脆桃 (Sweet Pickled Peaches)</span>
+                <span class="price">$200</span>
+                <span class="limit-tag">夏季限定 敬請期待</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <label>配送方式</label>
+        <div class="shipping-selector">
+            <div id="type-pickup" class="ship-opt active" onclick="setShip('面交自取', 0)">
+                面交自取
+                <span style="display:block; font-size:0.7rem; opacity:0.8;">(限中彰部分地區)</span>
+            </div>
+            <div id="type-delivery" class="ship-opt" onclick="setShip('冷藏宅配', 160)">
+                冷藏宅配
+                <span style="display:block; font-size:0.7rem; opacity:0.8;">(運費 $160)</span>
+            </div>
+        </div>
+
+        <div class="form-group"><label>收件人姓名</label><input type="text" id="cust-name" placeholder="請填寫姓名"></div>
+        <div class="form-group"><label>電話</label><input type="tel" id="cust-phone" placeholder="請填寫電話"></div>
+        <div class="form-group"><label>收件地址 / 自取地點</label><input type="text" id="cust-addr" placeholder="完整地址"></div>
+        
+        <div class="form-group" onclick="document.getElementById('cust-date').focus()">
+            <label>希望到貨日 (最快7天後)</label>
+            <input type="date" id="cust-date">
+        </div>
+
+        <div class="form-group"><label>備註</label><textarea id="cust-note" rows="2" placeholder="如有其他需求請寫在這裡"></textarea></div>
+        
+        <div class="notice-text">
+            ⚠️為求新鮮，見單生產，小本經營，請勿那個，訂單成立後，請先匯款哦 ♡⚠️
+        </div>
+
+        <div id="cart-display">尚未選擇商品</div>
+        <div id="discount-note" class="discount-info"></div>
+        <div class="total-box">應付總額：<span id="final-total">$0</span></div>
+
+        <div class="btn-row">
+            <button class="btn btn-clear" onclick="window.location.reload()">一鍵清空</button>
+            <button class="btn btn-copy" onclick="copyOrder()">複製訂單</button>
+        </div>
+    </div>
+
+    <div class="footer-note">© nanzihan2020 男子漢漬料本舖</div>
+</div>
+
+<script>
+    let cart = {};
+    let shipMethod = '面交自取';
+    let shipFee = 0;
+
+    (function initDate() {
+        const dateInput = document.getElementById('cust-date');
+        const future = new Date();
+        future.setDate(future.getDate() + 7);
+        const y = future.getFullYear();
+        const m = String(future.getMonth() + 1).padStart(2, '0');
+        const d = String(future.getDate()).padStart(2, '0');
+        const minDate = `${y}-${m}-${d}`;
+        dateInput.min = minDate;
+        dateInput.value = minDate;
+    })();
+
+    function setShip(method, fee) {
+        shipMethod = method;
+        shipFee = fee;
+        document.getElementById('type-pickup').className = (method === '面交自取' ? 'ship-opt active' : 'ship-opt');
+        document.getElementById('type-delivery').className = (method === '冷藏宅配' ? 'ship-opt active' : 'ship-opt');
+        update();
+    }
+
+    function changeQty(name, price, delta) {
+        if (!cart[name]) { cart[name] = { price: price, qty: 0 }; }
+        cart[name].qty += delta;
+        if (cart[name].qty < 0) cart[name].qty = 0;
+        document.getElementById(`qty-${name}`).innerText = cart[name].qty;
+        update();
+    }
+
+    function update() {
+        let itemTotal = 0;
+        let html = '';
+        for (let key in cart) {
+            if (cart[key].qty > 0) {
+                itemTotal += cart[key].price * cart[key].qty;
+                html += `<div>■ ${key} x ${cart[key].qty}</div>`;
+            }
+        }
+        document.getElementById('cart-display').innerHTML = html || '尚未選擇商品';
+
+        let discountedTotal = itemTotal;
+        let note = "";
+        if (itemTotal >= 2000) {
+            discountedTotal = Math.round(itemTotal * 0.9);
+            note = `符合滿 $2000 享 9 折！(已折 $${itemTotal - discountedTotal})`;
+        } else if (itemTotal > 0) {
+            note = `再買 $${2000 - itemTotal} 享全單 9 折`;
+        }
+        
+        document.getElementById('discount-note').innerText = note;
+        document.getElementById('final-total').innerText = `$${discountedTotal + shipFee}`;
+    }
+
+    function copyOrder() {
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        if (!name || !phone) { alert('請填寫姓名與電話'); return; }
+
+        let itemsText = '';
+        let itemTotal = 0;
+        for (let key in cart) {
+            if (cart[key].qty > 0) {
+                itemsText += `■ ${key} x ${cart[key].qty}\n`;
+                itemTotal += cart[key].price * cart[key].qty;
+            }
+        }
+        if (itemTotal === 0) { alert('尚未選購商品'); return; }
+
+        let finalItemTotal = (itemTotal >= 2000) ? Math.round(itemTotal * 0.9) : itemTotal;
+        let discLog = (itemTotal >= 2000) ? `(滿額折扣 9 折：- $${itemTotal - finalItemTotal})\n` : "";
+
+        const msg = `【 男子漢漬料本舖 訂單 】\n` +
+                    `--------------------------\n` +
+                    `${itemsText}` +
+                    `--------------------------\n` +
+                    `配送方式：${shipMethod}\n` +
+                    `商品小計：$${itemTotal}\n` +
+                    `${discLog}` +
+                    `運費總計：$${shipFee}\n` +
+                    `應付總額：$${finalItemTotal + shipFee}\n\n` +
+                    `收件人：${name}\n` +
+                    `電話：${phone}\n` +
+                    `地址：${document.getElementById('cust-addr').value}\n` +
+                    `到貨日：${document.getElementById('cust-date').value}\n` +
+                    `備註：${document.getElementById('cust-note').value || '無'}\n\n` +
+                    `⚠️ 經帥老闆回覆確認訂單成立後，請先匯款哦 ♡`;
+
+        const textArea = document.createElement("textarea");
+        textArea.value = msg;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            alert('訂單內容已複製到剪貼簿,請私訊IG或LINE貼給老闆！');
+        } catch (err) {
+            alert('複製失敗，請手動選取');
+        }
+        document.body.removeChild(textArea);
+    }
+</script>
+
+</body>
+</html>
